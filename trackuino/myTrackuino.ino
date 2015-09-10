@@ -14,6 +14,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+ 
+#include <SPI.h>
+#include <SD.h>
 
 // Mpide 22 fails to compile Arduino code because it stupidly defines ARDUINO 
 // as an empty macro (hence the +0 hack). UNO32 builds are fine. Just use the
@@ -36,14 +39,14 @@
 // Trackuino custom libs
 #include "config.h"
 #include "afsk_avr.h"
-#include "afsk_pic32.h"
+//#include "afsk_pic32.h"
 #include "aprs.h"
 #include "buzzer.h"
 #include "gps.h"
 #include "pin.h"
 #include "power.h"
 #include "sensors_avr.h"
-#include "sensors_pic32.h"
+//#include "sensors_pic32.h"
 
 // Arduino/AVR libs
 #if (ARDUINO + 1) >= 100
@@ -57,10 +60,12 @@ static const uint32_t VALID_POS_TIMEOUT = 2000;  // ms
 
 // Module variables
 static int32_t next_aprs = 0;
-
+static int32_t next_gps = 0;
 
 void setup()
 {
+  // Note: The Arduino UNO LED conflicts with with the SPI port CLK.
+  // Initializing here, but it shouldn't be used elsewhere.
   pinMode(LED_PIN, OUTPUT);
   pin_write(LED_PIN, LOW);
 
@@ -73,6 +78,8 @@ void setup()
   afsk_setup();
   gps_setup();
   sensors_setup();
+  SD.begin();
+  
 
 #ifdef DEBUG_SENS
   Serial.print("Ti=");
@@ -85,6 +92,7 @@ void setup()
 
   // Do not start until we get a valid time reference
   // for slotted transmissions.
+  /*
   if (APRS_SLOT >= 0) {
     do {
       while (! Serial.available())
@@ -96,19 +104,32 @@ void setup()
   }
   else {
     next_aprs = millis();
-  }  
+  }
+  */
+  
+  next_aprs = millis();
+  next_gps = millis();
+  
   // TODO: beep while we get a fix, maybe indicating the number of
   // visible satellites by a series of short beeps?
 }
+
 
 void get_pos()
 {
   // Get a valid position from the GPS
   int valid_pos = 0;
   uint32_t timeout = millis();
+  
+  File logFile = SD.open(GPS_LOG_FILE, FILE_WRITE);
+  
   do {
     if (Serial.available())
-      valid_pos = gps_decode(Serial.read());
+    {
+      char c = Serial.read();
+      valid_pos = gps_decode(c);
+      logFile.write(c);
+    }
   } while ( (millis() - timeout < VALID_POS_TIMEOUT) && ! valid_pos) ;
 
   if (valid_pos) {
@@ -118,7 +139,10 @@ void get_pos()
       buzzer_on();
     }
   }
+  
+  logFile.close();
 }
+
 
 void loop()
 {
@@ -127,15 +151,18 @@ void loop()
     get_pos();
     aprs_send();
     next_aprs += APRS_PERIOD * 1000L;
+    next_gps  += GPS_LOG_PERIOD * 1000L;  // Hold off GPS logging since we just did it
     while (afsk_flush()) {
       power_save();
     }
-
-#ifdef DEBUG_MODEM
-    // Show modem ISR stats from the previous transmission
-    afsk_debug();
-#endif
   }
-
+   
+  // Time to record another GPS message
+  else if ((int32_t) (millis() - next_gps) >= 0)
+  {
+    get_pos();
+    next_gps += GPS_LOG_PERIOD * 1000L;
+  }
+  
   power_save(); // Incoming GPS data or interrupts will wake us up
 }

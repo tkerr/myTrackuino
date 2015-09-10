@@ -15,6 +15,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include <avr/pgmspace.h>
+
 #include "config.h"
 #include "gps.h"
 #if (ARDUINO + 1) >= 100
@@ -135,9 +137,9 @@ unsigned char from_hex(char a)
 
 void parse_sentence_type(const char *token)
 {
-  if (strcmp(token, "$GPGGA") == 0) {
+  if (strcmp_P(token, PSTR("$GPGGA")) == 0) {
     sentence_type = SENTENCE_GGA;
-  } else if (strcmp(token, "$GPRMC") == 0) {
+  } else if (strcmp_P(token, PSTR("$GPRMC")) == 0) {
     sentence_type = SENTENCE_RMC;
   } else {
     sentence_type = SENTENCE_UNK;
@@ -228,14 +230,13 @@ void parse_altitude(const char *token)
   new_altitude = atof(token);
 }
 
-
 //
 // Exported functions
 //
 void gps_setup() {
-  strcpy(gps_time, "000000");
-  strcpy(gps_aprs_lat, "0000.00N");
-  strcpy(gps_aprs_lon, "00000.00E");
+  strcpy_P(gps_time, PSTR("000000"));
+  strcpy_P(gps_aprs_lat, PSTR("0000.00N"));
+  strcpy_P(gps_aprs_lon, PSTR("00000.00E"));
 }
 
 bool gps_decode(char c)

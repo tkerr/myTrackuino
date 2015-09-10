@@ -33,7 +33,8 @@ extern const uint16_t TABLE_SIZE;
 extern const uint32_t PLAYBACK_RATE;
 
 // Exported vars
-extern const prog_uchar afsk_sine_table[];
+//extern const prog_uchar afsk_sine_table[];
+extern const unsigned char PROGMEM afsk_sine_table[];
 
 // Inline functions (this saves precious cycles in the ISR)
 #if AUDIO_PIN == 3

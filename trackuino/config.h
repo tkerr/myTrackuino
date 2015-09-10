@@ -39,7 +39,7 @@
 // - Cars:       9
 // - Home:       0
 // - IGate:      5
-#define S_CALLSIGN      "MYCALL"
+#define S_CALLSIGN      "KC3FBT"
 #define S_CALLSIGN_ID   11
 
 // Destination callsign: APRS (with SSID=0) is usually okay.
@@ -56,7 +56,7 @@
 // APRS comment: this goes in the comment portion of the APRS message. You
 // might want to keep this short. The longer the packet, the more vulnerable
 // it is to noise. 
-#define APRS_COMMENT    "Trackuino reminder: replace callsign with your own"
+#define APRS_COMMENT    "SC-1"
 
 
 // --------------------------------------------------------------------------
@@ -64,7 +64,7 @@
 // --------------------------------------------------------------------------
 
 // TX delay in milliseconds
-#define TX_DELAY      300
+#define TX_DELAY      500
 
 // --------------------------------------------------------------------------
 // Tracker config (trackuino.pde)
@@ -82,12 +82,16 @@
 // respectively. The first balloon will transmit at 00:00:00, 00:01:00, 
 // 00:02:00, etc. and the second balloon will transmit at 00:00:30, 00:01:30,
 // 00:02:30, etc.
-#define APRS_SLOT     0     // seconds. -1 disables slotted transmissions
+#define APRS_SLOT     -1     // seconds. -1 disables slotted transmissions
 #define APRS_PERIOD   60    // seconds
 
 // GPS baud rate (in bits per second). This is also the baud rate at which
 // debug data will be printed out the serial port.
-#define GPS_BAUDRATE  9600
+#define GPS_BAUDRATE    9600
+
+// GPS data logging parameters.
+#define GPS_LOG_PERIOD  10         // GPS data recording interval in seconds
+#define GPS_LOG_FILE    "GPS.LOG"  // GPS data log file name
 
 
 // --------------------------------------------------------------------------
@@ -147,7 +151,7 @@
 
 // Units for temperature sensors (Added by: Kyle Crockett)
 // 1 = Celsius, 2 = Kelvin, 3 = Fahrenheit
-#define TEMP_UNIT 1
+#define TEMP_UNIT 3
 
 // Calibration value in the units selected. Use integer only.
 #define CALIBRATION_VAL 0
@@ -194,6 +198,7 @@
 // This is the LED pin (13 on Arduinos). The LED will be on while the AVR is
 // running and off while it's sleeping, so its brightness gives an indication
 // of the CPU activity.
+// *** This pin is also used for the SPI bus clock. ***
 #define LED_PIN                 13
 
 // Debug info includes printouts from different modules to aid in testing and
