@@ -1,3 +1,13 @@
+tkerr - 2015/09/10
+------------------
+
+ * Added SD card logging capability
+ 
+ * Removed power status LED due to conflict with SPI port
+ 
+ * Customized for KC3FBT balloon launch on 2015/09/10
+ 
+
 Version 1.5 - 2014/04/06
 ------------------------
 

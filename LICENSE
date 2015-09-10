@@ -1,3 +1,12 @@
+Files in this repository licensed under GNU GPL V2 below.
+
+Note that the application also uses the Ardunio-supplied SD
+library which is licensed under GNU GPL V3.
+
+See http://www.gnu.org/licenses for details.
+
+
+
                     GNU GENERAL PUBLIC LICENSE
                        Version 2, June 1991
 

@@ -1,10 +1,18 @@
+myTrackuino - Custom adaptation of trackuino APRS tracker for Arduino
+---------------------------------------------------------------------
+
+Original trackuino code developed by Javi, EA5HAV and obtained from
+https://github.com/trackuino/trackuino
+
+Customizations added by Tom Kerr, AB3GY for specific balloon launches.
+
+
 How to compile the Trackuino firmware:
 --------------------------------------
 
 1. Copy the "trackuino" folder into your Arduino sketches folder.
 
-2. Launch the Arduino IDE and open up the sketch. You need version 23 of the
-Arduino IDE.
+2. Launch the Arduino IDE and open up the sketch.
 
 3. Locate the "config.h" tab and replace settings with your own (YOUR CALLSIGN
    GOES THERE).
@@ -14,5 +22,5 @@ error.
 
 Stay up-to-date at:
 
-http://code.google.com/p/trackuino
+https://github.com/trackuino/trackuino
 
